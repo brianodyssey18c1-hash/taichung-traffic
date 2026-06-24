@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>臺中市易肇事路口 - 全域大數據診斷戰情室</title>
+    <title>臺中市全域大數據診斷戰情室 - 亮色極簡版</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -13,38 +13,50 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Microsoft JhengHei", sans-serif; }
         
+        /* 全域改為明亮清爽的淺灰白底 */
         body, html { height: 100%; overflow: hidden; background: #f8fafc; color: #1e293b; }
         #app { display: flex; height: 100vh; width: 100vw; }
         
+        /* 側邊欄改為純白底色，並加上高質感的細微邊框與陰影 */
         #sidebar { width: 400px; background: #ffffff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; z-index: 10; box-shadow: 4px 0 20px rgba(0,0,0,0.05); }
         
-        .header { padding: 20px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-bottom: 1px solid #1e40af; }
+        /* 標頭改為專業、高明度的藍色漸層 */
+        .header { padding: 20px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-bottom: 1px solid #1e40af; color: #ffffff; }
         .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; color: #ffffff; }
         .header p { font-size: 12px; color: #bfdbfe; margin-top: 5px; }
         
-        #map { flex: 1; height: 100%; background: #f1f5f9; }
+        /* 地圖容器與佈局修正（防止右側留白） */
+        #map-container { flex: 1; position: relative; height: 100%; background: #e2e8f0; }
+        #map { height: 100%; width: 100%; }
         
+        /* 側邊欄內容優化 - 文字改為深色 */
         .content { padding: 20px; flex: 1; overflow-y: auto; }
-        .stat-card { background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+        .stat-card { background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
         .stat-card h3 { font-size: 13px; color: #64748b; margin-bottom: 5px; font-weight: 600; }
         .stat-card .value { font-size: 26px; font-weight: bold; color: #10b981; }
+        .stat-card .value.alert { color: #ef4444; }
+        .hint-text { font-size: 12px; color: #64748b; line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 8px; border-left: 4px solid #3b82f6; }
 
+        /* AI 聊天視窗樣式改為亮色系 */
         #chat-container { height: 350px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-        .chat-title { padding: 10px 15px; background: #f8fafc; font-size: 13px; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; color: #2563eb; }
-        #chatMessages { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; }
+        .chat-title { padding: 12px 15px; background: #f8fafc; font-size: 13px; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; color: #2563eb; }
+        #chatMessages { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; }
         
-        .msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.4; word-break: break-all; font-size: 13px; }
-        .msg.user { background: #2563eb; color: white; align-self: flex-end; }
-        .msg.bot { background: #ffffff; color: #334155; align-self: flex-start; border: 1px solid #e2e8f0; }
+        /* 💬 對話泡泡亮色優化 */
+        .msg { padding: 10px 14px; border-radius: 12px; max-width: 85%; line-height: 1.5; word-break: break-all; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .msg.user { background: #2563eb; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.bot { background: #ffffff; color: #334155; align-self: flex-start; border: 1px solid #e2e8f0; border-bottom-left-radius: 2px; }
         
-        .chat-input-area { padding: 10px; background: #ffffff; display: flex; gap: 8px; border-top: 1px solid #e2e8f0; }
-        #chatInput { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 6px; color: #1e293b; font-size: 13px; }
-        #chatInput:focus { outline: none; border-color: #2563eb; background: #ffffff; }
+        /* 輸入區域樣式 */
+        .chat-input-area { padding: 12px; background: #ffffff; display: flex; gap: 8px; border-top: 1px solid #e2e8f0; }
+        #chatInput { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 8px; color: #1e293b; font-size: 13px; transition: all 0.2s; }
+        #chatInput:focus { outline: none; border-color: #2563eb; background: #ffffff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
         
-        .chat-input-area button { background: #2563eb; border: none; color: white; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; font-size: 13px; }
+        .chat-input-area button { background: #2563eb; border: none; color: white; padding: 0 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: background 0.2s; }
         .chat-input-area button:hover { background: #1d4ed8; }
         
-        .leaflet-popup-content-wrapper { background: #ffffff !important; color: #1e293b !important; border: 1px solid #e2e8f0; border-radius: 8px; }
+        /* Leaflet Popup 明亮風格優化 */
+        .leaflet-popup-content-wrapper { background: #ffffff !important; color: #1e293b !important; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         .leaflet-popup-tip { background: #ffffff !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #64748b !important; }
     </style>
@@ -67,15 +79,15 @@
                 <h3>地圖觀測狀態</h3>
                 <div class="value" style="color: #2563eb; font-size: 13px;" id="data-status">正在讀取 CSV 檔案...</div>
             </div>
-            <p style="font-size: 12px; color: #64748b; line-height: 1.5;">
-                💡 <b>SVG 效能加速版：</b>系統已改用高效能 SVG 繪製 Google Map 水滴型標記，不再載入外部圖片，徹底告別網頁卡死！
-            </p>
+            <div class="hint-text">
+                💡 <b>提示：</b>本系統已透過雲端即時載入 <code>clean_traffic_accidents_2.csv</code>。地圖上的圓圈越大代表事故次數越多；紅色代表有發生死亡(A1)事故。
+            </div>
         </div>
 
         <div id="chat-container">
             <div class="chat-title">🤖 AI 交通工程決策助理 (純前端優化版)</div>
             <div id="chatMessages">
-                <div class="msg bot">您好！我是臺中交通大數據 AI 助理。我已經與您的雲端 Worker 系統連線。請隨時詢問我關於各路口的改善建議！</div>
+                <div class="msg bot">您好！我是臺中交通大數據 AI 助理。我已經與您的雲端 Worker 系統連線。現在您可以直接輸入想分析的區域或交通問題囉！</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chatInput" placeholder="輸入交通問題，如：西屯區車禍主因是什麼？" onkeydown="if(event.keyCode==13) sendMsg()">
@@ -84,7 +96,9 @@
         </div>
     </div>
 
-    <div id="map"></div>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
 </div>
 
 <script>
@@ -92,21 +106,23 @@
     var markersLayer = L.layerGroup();
 
     window.onload = function() {
+        // 1. 初始化地圖 (設定中心點在台中市區)
         map = L.map('map', {
             center: [24.16, 120.65],
             zoom: 12,
             zoomControl: true
         });
 
-        // 質感高明度白底地圖
+        // 🟢 這裡幫你更換成高質感、精極簡的「北歐白底地圖」風格，與你的白色網頁完美融合！
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             maxZoom: 20
         }).addTo(map);
         
         markersLayer.addTo(map);
 
+        // 2. 自動讀取並解析 CSV 檔案 (與你的檔名保持一致)
         Papa.parse("clean_traffic_accidents_2.csv", {
             download: true,
             header: true,          
@@ -115,18 +131,18 @@
             complete: function(results) {
                 console.log("CSV 載入成功，數據筆數：", results.data.length);
                 document.getElementById("total-records").innerText = results.data.length.toLocaleString() + " 筆";
-                document.getElementById("data-status").innerText = "🟢 資料正常，地標渲染完成";
+                document.getElementById("data-status").innerText = "🟢 資料連線正常，已渲染至地圖";
                 renderCsvMarkers(results.data);
             },
             error: function(err) {
                 console.error("讀取 CSV 檔案失敗:", err);
                 document.getElementById("total-records").innerText = "錯誤";
-                document.getElementById("data-status").innerText = "❌ 找不到 CSV 檔案";
+                document.getElementById("data-status").innerText = "❌ 找不到 CSV 檔案，請確認檔名是否對齊";
             }
         });
     };
 
-    // 3. 🎯 SVG 向量水滴渲染（免圖片、超流暢）
+    // 3. 地圖標記渲染
     function renderCsvMarkers(data) {
         markersLayer.clearLayers();
         var locationCounts = {};
@@ -154,7 +170,6 @@
             }
         });
 
-        // ⚡ 直接渲染所有不限筆數（因為 SVG 非常輕量，幾千個點也完全不會卡）
         Object.keys(locationCounts).forEach(function(key) {
             var loc = locationCounts[key];
             var topReason = "未註明";
@@ -166,41 +181,37 @@
                 }
             }
 
-            // 🎨 根據有無死亡事故，給予藍色或紅色的 Google Map 水滴標籤
-            var pinColor = loc.dead > 0 ? '#ef4444' : '#2563eb';
+            var markerColor = loc.dead > 0 ? '#ef4444' : '#3b82f6'; // 明亮版地圖將非死亡車禍改為高對比的藍色
+            var radiusSize = Math.min(6 + (loc.count * 0.4), 25);
 
-            // 🛠️ 用 SVG 向量圖打造一個完美、不卡頓的 Google Map 水滴型圖標
-            var svgIcon = L.divIcon({
-                html: `<svg width="24" height="36" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 0C5.37 0 0 5.37 0 12c0 7.56 12 24 12 24s12-16.44 12-24c0-6.63-5.37-12-12-12zm0 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="${pinColor}"/>
-                        <circle cx="12" cy="12" r="3" fill="#ffffff"/>
-                       </svg>`,
-                className: '',
-                iconSize: [24, 36],
-                iconAnchor: [12, 36],
-                popupAnchor: [0, -32]
+            var circle = L.circleMarker([loc.lat, loc.lng], {
+                radius: radiusSize,
+                color: markerColor,
+                fillColor: markerColor,
+                fillOpacity: 0.4,
+                weight: 1.5
             });
 
-            var marker = L.marker([loc.lat, loc.lng], { icon: svgIcon });
-
-            marker.bindPopup(`
+            // 彈出視窗明亮配色優化
+            circle.bindPopup(`
                 <div style="font-family: sans-serif; padding: 3px; min-width: 180px;">
-                    <h4 style="margin: 0 0 8px 0; color: #2563eb; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">📍 易肇事熱點 (${loc.district})</h4>
+                    <h4 style="margin: 0 0 8px 0; color: #2563eb; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">📍 事故熱點 (${loc.district})</h4>
                     <table style="width: 100%; font-size: 12px; color: #334155; border-collapse: collapse;">
                         <tr><td style="padding: 3px 0;"><b>累積事故：</b></td><td style="text-align: right; color: #2563eb;"><b>${loc.count} 件</b></td></tr>
                         <tr><td style="padding: 3px 0;"><b>死亡人數：</b></td><td style="text-align: right; color: #ef4444;"><b>${loc.dead} 人</b></td></tr>
                         <tr><td style="padding: 3px 0;"><b>受傷人數：</b></td><td style="text-align: right;">${loc.injured} 人</td></tr>
-                        <tr><td colspan="2" style="padding: 5px 0 0 0; color: #64748b; font-size: 11px; border-top: 1px solid #e2e8f0; margin-top: 5px;">
+                        <tr><td colspan="2" style="padding: 6px 0 0 0; color: #64748b; font-size: 11px; border-top: 1px solid #e2e8f0; margin-top: 6px;">
                             <b>主要肇因：</b><br><span style="color: #1e293b;">${topReason}</span>
                         </td></tr>
                     </table>
                 </div>
             `);
 
-            markersLayer.addLayer(marker);
+            markersLayer.addLayer(circle);
         });
     }
 
+    // 4. 前端聊天室呼叫 Cloudflare Worker
     async function sendMsg() {
         var input = document.getElementById("chatInput");
         var text = input.value.trim();
@@ -217,20 +228,25 @@
         
         try {
             const workerUrl = 'https://sparkling-mountain-f419.brianodyssey18c1.workers.dev';
+
             const response = await fetch(workerUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: text })
             });
             
-            if (!response.ok) throw new Error(`伺服器錯誤: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`伺服器錯誤: ${response.status}`);
+            }
             
             const data = await response.json();
             document.getElementById(botMsgId).innerHTML = data.reply;
+            
         } catch(err) {
             console.error("AI 連線失敗：", err);
-            document.getElementById(botMsgId).innerHTML = `❌ <b>連線錯誤：</b> 無法成功呼叫雲端 AI。`;
+            document.getElementById(botMsgId).innerHTML = `❌ <b>連線錯誤：</b> 無法成功呼叫雲端 AI。請確認 Cloudflare 上的 Worker 狀態正常。`;
         }
+        
         box.scrollTop = box.scrollHeight;
     }
 </script>
