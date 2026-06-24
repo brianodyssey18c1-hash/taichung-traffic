@@ -17,46 +17,44 @@
         body, html { height: 100%; overflow: hidden; background: #f8fafc; color: #1e293b; }
         #app { display: flex; height: 100vh; width: 100vw; }
         
-        /* 側邊欄改為純白底色，並加上高質感的細微邊框與陰影 */
+        /* 側邊欄改為純白底色，並加上細緻邊框與陰影 */
         #sidebar { width: 400px; background: #ffffff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; z-index: 10; box-shadow: 4px 0 20px rgba(0,0,0,0.05); }
         
         /* 標頭改為專業、高明度的藍色漸層 */
-        .header { padding: 20px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-bottom: 1px solid #1e40af; color: #ffffff; }
+        .header { padding: 20px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-bottom: 1px solid #1e40af; }
         .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; color: #ffffff; }
         .header p { font-size: 12px; color: #bfdbfe; margin-top: 5px; }
         
-        /* 地圖容器與佈局修正（防止右側留白） */
-        #map-container { flex: 1; position: relative; height: 100%; background: #e2e8f0; }
-        #map { height: 100%; width: 100%; }
+        /* 🎯 修正核心：直接讓 #map 填滿彈性佈局的剩餘右側空間，絕不留白 */
+        #map { flex: 1; height: 100%; background: #f1f5f9; }
         
-        /* 側邊欄內容優化 - 文字改為深色 */
+        /* 側邊欄統計字級與排版優化 */
         .content { padding: 20px; flex: 1; overflow-y: auto; }
-        .stat-card { background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+        .stat-card { background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
         .stat-card h3 { font-size: 13px; color: #64748b; margin-bottom: 5px; font-weight: 600; }
         .stat-card .value { font-size: 26px; font-weight: bold; color: #10b981; }
         .stat-card .value.alert { color: #ef4444; }
-        .hint-text { font-size: 12px; color: #64748b; line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 8px; border-left: 4px solid #3b82f6; }
 
         /* AI 聊天視窗樣式改為亮色系 */
         #chat-container { height: 350px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-        .chat-title { padding: 12px 15px; background: #f8fafc; font-size: 13px; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; color: #2563eb; }
-        #chatMessages { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; }
+        .chat-title { padding: 10px 15px; background: #f8fafc; font-size: 13px; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; color: #2563eb; }
+        #chatMessages { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; }
         
         /* 💬 對話泡泡亮色優化 */
-        .msg { padding: 10px 14px; border-radius: 12px; max-width: 85%; line-height: 1.5; word-break: break-all; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .msg.user { background: #2563eb; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg.bot { background: #ffffff; color: #334155; align-self: flex-start; border: 1px solid #e2e8f0; border-bottom-left-radius: 2px; }
+        .msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.4; word-break: break-all; font-size: 13px; }
+        .msg.user { background: #2563eb; color: white; align-self: flex-end; }
+        .msg.bot { background: #ffffff; color: #334155; align-self: flex-start; border: 1px solid #e2e8f0; }
         
         /* 輸入區域樣式 */
-        .chat-input-area { padding: 12px; background: #ffffff; display: flex; gap: 8px; border-top: 1px solid #e2e8f0; }
-        #chatInput { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 8px; color: #1e293b; font-size: 13px; transition: all 0.2s; }
-        #chatInput:focus { outline: none; border-color: #2563eb; background: #ffffff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .chat-input-area { padding: 10px; background: #ffffff; display: flex; gap: 8px; border-top: 1px solid #e2e8f0; }
+        #chatInput { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 6px; color: #1e293b; font-size: 13px; }
+        #chatInput:focus { outline: none; border-color: #2563eb; background: #ffffff; }
         
-        .chat-input-area button { background: #2563eb; border: none; color: white; padding: 0 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+        .chat-input-area button { background: #2563eb; border: none; color: white; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; font-size: 13px; }
         .chat-input-area button:hover { background: #1d4ed8; }
         
         /* Leaflet Popup 明亮風格優化 */
-        .leaflet-popup-content-wrapper { background: #ffffff !important; color: #1e293b !important; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .leaflet-popup-content-wrapper { background: #ffffff !important; color: #1e293b !important; border: 1px solid #e2e8f0; border-radius: 8px; }
         .leaflet-popup-tip { background: #ffffff !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #64748b !important; }
     </style>
@@ -79,15 +77,15 @@
                 <h3>地圖觀測狀態</h3>
                 <div class="value" style="color: #2563eb; font-size: 13px;" id="data-status">正在讀取 CSV 檔案...</div>
             </div>
-            <div class="hint-text">
+            <p style="font-size: 12px; color: #64748b; line-height: 1.5;">
                 💡 <b>提示：</b>本系統已透過雲端即時載入 <code>clean_traffic_accidents_2.csv</code>。地圖上的圓圈越大代表事故次數越多；紅色代表有發生死亡(A1)事故。
-            </div>
+            </p>
         </div>
 
         <div id="chat-container">
             <div class="chat-title">🤖 AI 交通工程決策助理 (純前端優化版)</div>
             <div id="chatMessages">
-                <div class="msg bot">您好！我是臺中交通大數據 AI 助理。我已經與您的雲端 Worker 系統連線。現在您可以直接輸入想分析的區域或交通問題囉！</div>
+                <div class="msg bot">您好！我是臺中交通大數據 AI 助理。我已經與您的雲端 Worker 系統連線。請隨時詢問我關於各路口的改善建議！</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chatInput" placeholder="輸入交通問題，如：西屯區車禍主因是什麼？" onkeydown="if(event.keyCode==13) sendMsg()">
@@ -96,9 +94,7 @@
         </div>
     </div>
 
-    <div id="map-container">
-        <div id="map"></div>
-    </div>
+    <div id="map"></div>
 </div>
 
 <script>
@@ -106,14 +102,14 @@
     var markersLayer = L.layerGroup();
 
     window.onload = function() {
-        // 1. 初始化地圖 (設定中心點在台中市區)
+        // 1. 初始化地圖
         map = L.map('map', {
             center: [24.16, 120.65],
             zoom: 12,
             zoomControl: true
         });
 
-        // 🟢 這裡幫你更換成高質感、精極簡的「北歐白底地圖」風格，與你的白色網頁完美融合！
+        // 🟢 更換為質感、乾淨的「高明度白底地圖」
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
@@ -122,7 +118,7 @@
         
         markersLayer.addTo(map);
 
-        // 2. 自動讀取並解析 CSV 檔案 (與你的檔名保持一致)
+        // 2. 自動讀取並解析 CSV 檔案
         Papa.parse("clean_traffic_accidents_2.csv", {
             download: true,
             header: true,          
@@ -137,7 +133,7 @@
             error: function(err) {
                 console.error("讀取 CSV 檔案失敗:", err);
                 document.getElementById("total-records").innerText = "錯誤";
-                document.getElementById("data-status").innerText = "❌ 找不到 CSV 檔案，請確認檔名是否對齊";
+                document.getElementById("data-status").innerText = "❌ 找不到 CSV 檔案，請確認檔名是否為 clean_traffic_accidents_2.csv";
             }
         });
     };
@@ -181,18 +177,17 @@
                 }
             }
 
-            var markerColor = loc.dead > 0 ? '#ef4444' : '#3b82f6'; // 明亮版地圖將非死亡車禍改為高對比的藍色
-            var radiusSize = Math.min(6 + (loc.count * 0.4), 25);
+            var markerColor = loc.dead > 0 ? '#ef4444' : '#2563eb'; // 非死亡事故改為與主題呼應的科技藍
+            var radiusSize = Math.min(5 + (loc.count * 0.3), 25);
 
             var circle = L.circleMarker([loc.lat, loc.lng], {
                 radius: radiusSize,
                 color: markerColor,
                 fillColor: markerColor,
                 fillOpacity: 0.4,
-                weight: 1.5
+                weight: 1
             });
 
-            // 彈出視窗明亮配色優化
             circle.bindPopup(`
                 <div style="font-family: sans-serif; padding: 3px; min-width: 180px;">
                     <h4 style="margin: 0 0 8px 0; color: #2563eb; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">📍 事故熱點 (${loc.district})</h4>
@@ -200,7 +195,7 @@
                         <tr><td style="padding: 3px 0;"><b>累積事故：</b></td><td style="text-align: right; color: #2563eb;"><b>${loc.count} 件</b></td></tr>
                         <tr><td style="padding: 3px 0;"><b>死亡人數：</b></td><td style="text-align: right; color: #ef4444;"><b>${loc.dead} 人</b></td></tr>
                         <tr><td style="padding: 3px 0;"><b>受傷人數：</b></td><td style="text-align: right;">${loc.injured} 人</td></tr>
-                        <tr><td colspan="2" style="padding: 6px 0 0 0; color: #64748b; font-size: 11px; border-top: 1px solid #e2e8f0; margin-top: 6px;">
+                        <tr><td colspan="2" style="padding: 5px 0 0 0; color: #64748b; font-size: 11px; border-top: 1px solid #e2e8f0; margin-top: 5px;">
                             <b>主要肇因：</b><br><span style="color: #1e293b;">${topReason}</span>
                         </td></tr>
                     </table>
