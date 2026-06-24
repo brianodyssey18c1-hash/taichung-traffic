@@ -139,6 +139,7 @@
     };
 
     // 3. 地圖標記渲染
+    // 3. 地圖標記渲染 (已改為 Google Map 風格的水滴型地標)
     function renderCsvMarkers(data) {
         markersLayer.clearLayers();
         var locationCounts = {};
@@ -177,18 +178,28 @@
                 }
             }
 
-            var markerColor = loc.dead > 0 ? '#ef4444' : '#2563eb'; // 非死亡事故改為與主題呼應的科技藍
-            var radiusSize = Math.min(5 + (loc.count * 0.3), 25);
+            // 🎯 這裡改用 Leaflet 預設的「水滴型地標 (L.marker)」
+            // 它會自動使用精緻的 Google Map 風格藍色水滴圖標
+            var marker = L.marker([loc.lat, loc.lng]);
 
-            var circle = L.circleMarker([loc.lat, loc.lng], {
-                radius: radiusSize,
-                color: markerColor,
-                fillColor: markerColor,
-                fillOpacity: 0.4,
-                weight: 1
-            });
+            // 💡 進階技巧：如果你希望區分「有發生死亡事故(A1)」的地標
+            // 可以取消註解下方這段代碼，讓死亡事故改用紅色的地標圖片：
+            /*
+            if (loc.dead > 0) {
+                marker = L.marker([loc.lat, loc.lng], {
+                    icon: L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    })
+                });
+            }
+            */
 
-            circle.bindPopup(`
+            marker.bindPopup(`
                 <div style="font-family: sans-serif; padding: 3px; min-width: 180px;">
                     <h4 style="margin: 0 0 8px 0; color: #2563eb; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">📍 事故熱點 (${loc.district})</h4>
                     <table style="width: 100%; font-size: 12px; color: #334155; border-collapse: collapse;">
@@ -202,7 +213,7 @@
                 </div>
             `);
 
-            markersLayer.addLayer(circle);
+            markersLayer.addLayer(marker);
         });
     }
 
