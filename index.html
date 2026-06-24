@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>臺中市全域大數據診斷戰情室 - 亮色極簡版</title>
+    <title>臺中市易肇事路口 - 全域大數據診斷戰情室</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -25,17 +25,16 @@
         .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; color: #ffffff; }
         .header p { font-size: 12px; color: #bfdbfe; margin-top: 5px; }
         
-        /* 🎯 修正核心：直接讓 #map 填滿彈性佈局的剩餘右側空間，絕不留白 */
+        /* 讓地圖完美填滿右側剩餘的所有空間，絕不破圖留白 */
         #map { flex: 1; height: 100%; background: #f1f5f9; }
         
-        /* 側邊欄統計字級與排版優化 */
+        /* 側邊欄統計排版優化 */
         .content { padding: 20px; flex: 1; overflow-y: auto; }
         .stat-card { background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
         .stat-card h3 { font-size: 13px; color: #64748b; margin-bottom: 5px; font-weight: 600; }
         .stat-card .value { font-size: 26px; font-weight: bold; color: #10b981; }
-        .stat-card .value.alert { color: #ef4444; }
 
-        /* AI 聊天視窗樣式改為亮色系 */
+        /* AI 聊天視窗樣式（亮色極簡版） */
         #chat-container { height: 350px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; }
         .chat-title { padding: 10px 15px; background: #f8fafc; font-size: 13px; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; color: #2563eb; }
         #chatMessages { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; }
@@ -45,7 +44,7 @@
         .msg.user { background: #2563eb; color: white; align-self: flex-end; }
         .msg.bot { background: #ffffff; color: #334155; align-self: flex-start; border: 1px solid #e2e8f0; }
         
-        /* 輸入區域樣式 */
+        /* 聊天輸入區域樣式 */
         .chat-input-area { padding: 10px; background: #ffffff; display: flex; gap: 8px; border-top: 1px solid #e2e8f0; }
         #chatInput { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 6px; color: #1e293b; font-size: 13px; }
         #chatInput:focus { outline: none; border-color: #2563eb; background: #ffffff; }
@@ -53,7 +52,7 @@
         .chat-input-area button { background: #2563eb; border: none; color: white; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; font-size: 13px; }
         .chat-input-area button:hover { background: #1d4ed8; }
         
-        /* Leaflet Popup 明亮風格優化 */
+        /* Leaflet 彈出訊息視窗明亮風格優化 */
         .leaflet-popup-content-wrapper { background: #ffffff !important; color: #1e293b !important; border: 1px solid #e2e8f0; border-radius: 8px; }
         .leaflet-popup-tip { background: #ffffff !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #64748b !important; }
@@ -78,7 +77,7 @@
                 <div class="value" style="color: #2563eb; font-size: 13px;" id="data-status">正在讀取 CSV 檔案...</div>
             </div>
             <p style="font-size: 12px; color: #64748b; line-height: 1.5;">
-                💡 <b>提示：</b>本系統已透過雲端即時載入 <code>clean_traffic_accidents_2.csv</code>。地圖上的圓圈越大代表事故次數越多；紅色代表有發生死亡(A1)事故。
+                💡 <b>提示：</b>本系統已透過雲端即時載入 <code>clean_traffic_accidents_2.csv</code>。地圖已改用 <b>Google Maps 風格的水滴型地標（Pin）</b> 呈現。
             </p>
         </div>
 
@@ -102,14 +101,14 @@
     var markersLayer = L.layerGroup();
 
     window.onload = function() {
-        // 1. 初始化地圖
+        // 1. 初始化地圖（中心點設在台中市區）
         map = L.map('map', {
             center: [24.16, 120.65],
             zoom: 12,
             zoomControl: true
         });
 
-        // 🟢 更換為質感、乾淨的「高明度白底地圖」
+        // 🟢 更換為高質感、極簡的「北歐明亮白底地圖」，與白色主題完美融合
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
@@ -118,7 +117,7 @@
         
         markersLayer.addTo(map);
 
-        // 2. 自動讀取並解析 CSV 檔案
+        // 2. 自動讀取並解析同目錄下的 CSV 檔案
         Papa.parse("clean_traffic_accidents_2.csv", {
             download: true,
             header: true,          
@@ -138,12 +137,12 @@
         });
     };
 
-    // 3. 地圖標記渲染
-    // 3. 地圖標記渲染 (已改為 Google Map 風格的水滴型地標)
+    // 3. 地圖標記渲染（已全面修正為 Google Map 風格水滴型標籤）
     function renderCsvMarkers(data) {
         markersLayer.clearLayers();
         var locationCounts = {};
 
+        // 彙整相同座標的事故數據
         data.forEach(function(row) {
             if (row['GPS座標Y'] && row['GPS座標X']) {
                 var key = row['GPS座標Y'].toFixed(4) + "," + row['GPS座標X'].toFixed(4);
@@ -167,6 +166,7 @@
             }
         });
 
+        // 將彙整後的數據渲染成水滴型地標（Marker）
         Object.keys(locationCounts).forEach(function(key) {
             var loc = locationCounts[key];
             var topReason = "未註明";
@@ -178,27 +178,10 @@
                 }
             }
 
-            // 🎯 這裡改用 Leaflet 預設的「水滴型地標 (L.marker)」
-            // 它會自動使用精緻的 Google Map 風格藍色水滴圖標
+            // 🎯 使用 Leaflet 預設的水滴型標籤
             var marker = L.marker([loc.lat, loc.lng]);
 
-            // 💡 進階技巧：如果你希望區分「有發生死亡事故(A1)」的地標
-            // 可以取消註解下方這段代碼，讓死亡事故改用紅色的地標圖片：
-            /*
-            if (loc.dead > 0) {
-                marker = L.marker([loc.lat, loc.lng], {
-                    icon: L.icon({
-                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]
-                    })
-                });
-            }
-            */
-
+            // 綁定點擊後的數據彈出視窗（Popup）
             marker.bindPopup(`
                 <div style="font-family: sans-serif; padding: 3px; min-width: 180px;">
                     <h4 style="margin: 0 0 8px 0; color: #2563eb; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">📍 事故熱點 (${loc.district})</h4>
@@ -217,7 +200,7 @@
         });
     }
 
-    // 4. 前端聊天室呼叫 Cloudflare Worker
+    // 4. 前端對話室呼叫 Cloudflare Worker 機制
     async function sendMsg() {
         var input = document.getElementById("chatInput");
         var text = input.value.trim();
@@ -233,6 +216,7 @@
         box.scrollTop = box.scrollHeight;
         
         try {
+            // 呼叫你的 Cloudflare Worker 網址
             const workerUrl = 'https://sparkling-mountain-f419.brianodyssey18c1.workers.dev';
 
             const response = await fetch(workerUrl, {
